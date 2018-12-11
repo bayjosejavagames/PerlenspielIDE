@@ -123,9 +123,10 @@ function init() {
         inputConsole.style.height = '100%';
         inputConsole.style.position = 'absolute';
 
+        let editorContainer = document.createElement('div');
+        editorContainer.appendChild(editorDiv);
 
-
-        let column2 = myGrid.addColumn(myGrid.createColumn([tabManager.getElement(), editorDiv, outputConsole,inputConsole], {'color':'#232323'}));
+        let column2 = myGrid.addColumn(myGrid.createColumn([tabManager.getElement(), editorContainer, outputConsole,inputConsole], {'color':'#232323'}));
         // column2.registerCallback(editorDiv, function (data) {
         //     // console.log("Callback for this editorDiv being resized:",data);
         //     editor.setSize('auto', (((parseFloat(data.style.height)-3)/100)*screen.height));
@@ -136,9 +137,18 @@ function init() {
 
         tabManager.registerFiletype('png', (name) => {
             console.log("path","Projects/"+myFileManager.loadedProject+'/'+name);
-            editorDiv.innerHTML = "<img src=Projects/"+myFileManager.loadedProject+'/'+name+"></img>"
+            while(editorContainer.firstChild){
+                editorContainer.removeChild(editorContainer.firstChild);
+            }
+            let imgWrapper = document.createElement('div');
+            imgWrapper.innerHTML = "<img src=Projects/"+myFileManager.loadedProject+'/'+name+"></img>";
+            editorContainer.appendChild(imgWrapper);
         });
         tabManager.registerFiletype('js', (name) => {
+            while(editorContainer.firstChild){
+                editorContainer.removeChild(editorContainer.firstChild);
+            }
+            editorContainer.appendChild(editorDiv);
             //Set the Editor data to be the game.js of the current project.
             myFileManager.loadFile(name).then(function(result) {
                 getEditor().setValue(result);
