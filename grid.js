@@ -240,10 +240,20 @@ class Grid{
     }
 
     /**
+     * @typedef {Object} V_Drag
+     * @property {Integer}  offset  - Im not sure what this dose
+     * @property {Element}  row1    - The first dom element, this drag will be positioned after this element.
+     * @property {Element}  row2    - The second dom element, this drag will be positioned before this element.
+     * @property {Element}  element - The dom element for this drag.
+     * @property {Function} width   - The size of this drags dom element in terms of window%
+     */
+
+    /**
      * Creates a vertical Drag. A vertical drag is a small element conjoining two rows. Clicking and dragging on a vertical Drag will change the
      * relative scale of the linked rows.
-     * @param {Row, Row} row1, row2
-     * @returns {String, Element} Returns a json object representing a Column.
+     * @param {Element} row1
+     * @param {Element} row2
+     * @returns {V_Drag} Returns a json object representing a Column.
      */
     createVDrag(row1, row2){
         let drag = document.createElement(V_DRAG_TAG);
@@ -275,7 +285,7 @@ class Grid{
     /**
      * This method can be called to add a column to the current grid. The grid is flexable, and has a constants size of 100%, when a new column is added, the default width of the column is (1/n)% where n is the number of columns in the grid.
      * This method can be called at any time to add a new column.
-     * @param {Column} column
+     * @param {Column} column - The Column that will be added.
      */
     addColumn(column){
         if(column['element']) {
@@ -302,6 +312,10 @@ class Grid{
         }
     }
 
+    /**
+     * This method lets the user register a new drag to appear on the window.
+     * @param {H_Drag} drag - The Horizontal drag to add to the window.
+     */
     addDrag(drag){
         if(drag['element']) {
             document.body.appendChild(drag.element);
@@ -311,6 +325,9 @@ class Grid{
         }
     }
 
+    /**
+     * This function is called to reposition all of the drags and grid elements to propper psitions after a drag has occured, or any external movment actions.
+     */
     refresh(){
         for(var i = 0; i < DRAGS.length; i++){
             DRAGS[i].element.style.left = (parseFloat(DRAGS[i].column2.element.style.left)-(DRAGS[i].width()/2))+'%';
@@ -388,6 +405,10 @@ class Grid{
         HEIGHT = document.body.clientHeight;
     }
 
+    /**
+     * This method is called on editor load. It takes in an array of size configuration data. This data is used to position all grid elements such that they retain the positions they were in the last time the editor was closed.
+     * @param {Array} sizes - The sizes of the grid elements.
+     */
     initializeGrid(widthArray){
         if(widthArray.length != COLUMNS.length){
             console.error(widthArray.length + ' widths passed into column initialize. Expected '+COLUMNS.length+" to be passed.");
@@ -415,6 +436,10 @@ class Grid{
         }
     }
 
+    /**
+     * This method is called when the editor is saving the active configuration. All columns and rows report their widths and heights respectivly. A multi-dimensional array object is constructed. This array has all of the height data needed to recreacte the current editor spacing on the next editor load.
+     * @returns {Array} sizes - The widths and heights of the current window configuration.
+     */
     getGridSize(){
         let out = [];
         console.log(COLUMNS);
@@ -431,10 +456,18 @@ class Grid{
         return out;
     }
 
+    /**
+     * Get the grid width.
+     * @returns {Integer} WIDTH - The width of the window.
+     */
     getWIDTH(){
         return this.WIDTH;
     }
 
+    /**
+     * Get the grid height.
+     * @returns {Integer} HEIGHT - The height of the window.
+     */
     getHEIGHT(){
         return this.HEIGHT
     }
