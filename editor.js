@@ -86,29 +86,28 @@ function init() {
         testDiv3.setAttribute('id', 'tree');
 
         let column1 = myGrid.addColumn(myGrid.createColumn([testDiv3, testDiv4] , {'color':'#232323'}));
-        myFileManager.getProjectFiles().then(function(result) {
-            $("#tree").fancytree({
-                checkbox: true,
-                selectMode: 3,
-                source: result,
-                // lazyLoad: function(event, data) {
-                //     data.result = {url: "https://cdn.rawgit.com/mar10/fancytree/72e03685/demo/ajax-sub2.json"};
-                // },
+        myFileManager.getProjectFiles('').then(function(result) {
+            setTimeout(function (){
+                console.log("result:",result);
 
-                activate: function(event, data) {
-                    $("#statusLine").text(event.type + ": " + data.node);
-                },
-                select: function(event, data) {
-                    $("#statusLine").text(
-                        event.type + ": " + data.node.isSelected() + " " + data.node
-                    );
+                $("#tree").fancytree({
+                    checkbox: false,
+                    selectMode: 3,
+                    source: {children:result},
+                    activate: function(event, data) {
+                        $("#statusLine").text(event.type + ": " + data.node);
+                    },
+                    select: function(event, data) {
+                        $("#statusLine").text(
+                            event.type + ": " + data.node.isSelected() + " " + data.node
+                        );
 
-                },
-                dblclick:function(event, data) {
-                    tabManager.openFile(data);
-                },
-            });
-
+                    },
+                    dblclick:function(event, data) {
+                        tabManager.openFile(data);
+                    },
+                });
+            }, 1000);
         }, function(err) {
             console.log(err);
         });
